@@ -1,1 +1,4 @@
-package com.cyril.ecommerce.dto; public record AuthResponse(String token,Long userId,String name,String email){}
+package com.cyril.ecommerce.dto;
+
+public record AuthResponse(String token, Long userId, String name, String email) {
+}

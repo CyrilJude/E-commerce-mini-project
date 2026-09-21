@@ -1,2 +1,29 @@
-package com.cyril.ecommerce.controller; import com.cyril.ecommerce.dto.PaymentRequest; import com.cyril.ecommerce.entity.*; import com.cyril.ecommerce.repository.OrderRepository; import com.cyril.ecommerce.service.UserService; import jakarta.validation.Valid; import org.springframework.web.bind.annotation.*;
-@RestController @RequestMapping("/api/payments") public class PaymentController {private final OrderRepository orders;private final UserService users;public PaymentController(OrderRepository orders,UserService users){this.orders=orders;this.users=users;} @PostMapping("/simulate") public Order simulate(@Valid @RequestBody PaymentRequest r){Order o=orders.findById(r.orderId()).orElseThrow();if(!o.getUser().getId().equals(users.current().getId()))throw new IllegalArgumentException("Order not found");o.setPaymentStatus(r.success()?PaymentStatus.PAID:PaymentStatus.FAILED);return orders.save(o);}}
+package com.cyril.ecommerce.controller;
+
+import com.cyril.ecommerce.dto.PaymentRequest;
+import com.cyril.ecommerce.entity.*;
+import com.cyril.ecommerce.repository.OrderRepository;
+import com.cyril.ecommerce.service.UserService;
+import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/payments")
+public class PaymentController {
+	private final OrderRepository orders;
+	private final UserService users;
+
+	public PaymentController(OrderRepository orders, UserService users) {
+		this.orders = orders;
+		this.users = users;
+	}
+
+	@PostMapping("/simulate")
+	public Order simulate(@Valid @RequestBody PaymentRequest r) {
+		Order o = orders.findById(r.orderId()).orElseThrow();
+		if (!o.getUser().getId().equals(users.current().getId()))
+			throw new IllegalArgumentException("Order not found");
+		o.setPaymentStatus(r.success() ? PaymentStatus.PAID : PaymentStatus.FAILED);
+		return orders.save(o);
+	}
+}

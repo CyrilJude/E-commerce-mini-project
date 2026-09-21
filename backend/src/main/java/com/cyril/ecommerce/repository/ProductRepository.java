@@ -1,1 +1,9 @@
-package com.cyril.ecommerce.repository; import com.cyril.ecommerce.entity.Product; import org.springframework.data.jpa.repository.JpaRepository; import java.util.List; public interface ProductRepository extends JpaRepository<Product,Long>{List<Product> findByCategoryIgnoreCase(String category);}
+package com.cyril.ecommerce.repository;
+
+import com.cyril.ecommerce.entity.Product;
+import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.List;
+
+public interface ProductRepository extends JpaRepository<Product, Long> {
+	List<Product> findByCategoryIgnoreCase(String category);
+}

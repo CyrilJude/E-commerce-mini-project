@@ -1,1 +1,60 @@
-import{useState}from'react';import{useNavigate}from'react-router-dom';import api from'../services/api';export default function Checkout(){const[a,setA]=useState(''),[o,setO]=useState(),[e,setE]=useState(''),nav=useNavigate();async function checkout(x){x.preventDefault();try{setO((await api.post('/orders',{shippingAddress:a})).data)}catch(x){setE(x.response?.data?.message||'Checkout failed')}}async function pay(ok){try{await api.post('/payments/simulate',{orderId:o.id,success:ok});if(ok)nav('/orders');else setE('Payment failed. You can try again.')}catch(x){setE('Payment request failed')}}if(o)return <main><div className="authBox"><h1>Payment</h1><p>Order #{o.id} created for ₹{o.totalAmount.toLocaleString('en-IN')}.</p><p>This is a simulated payment flow for demonstration.</p><button className="primary" onClick={()=>pay(true)}>Simulate successful payment</button><button className="secondary" onClick={()=>pay(false)}>Simulate failed payment</button>{e&&<div className="error">{e}</div>}</div></main>;return <main><form className="authBox" onSubmit={checkout}><h1>Checkout</h1><textarea required placeholder="Shipping address" value={a} onChange={x=>setA(x.target.value)}/>{e&&<div className="error">{e}</div>}<button className="primary">Place order</button></form></main>}
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import api from "../services/api";
+export default function Checkout() {
+  const [a, setA] = useState(""),
+    [o, setO] = useState(),
+    [e, setE] = useState(""),
+    nav = useNavigate();
+  async function checkout(x) {
+    x.preventDefault();
+    try {
+      setO((await api.post("/orders", { shippingAddress: a })).data);
+    } catch (x) {
+      setE(x.response?.data?.message || "Checkout failed");
+    }
+  }
+  async function pay(ok) {
+    try {
+      await api.post("/payments/simulate", { orderId: o.id, success: ok });
+      if (ok) nav("/orders");
+      else setE("Payment failed. You can try again.");
+    } catch (x) {
+      setE("Payment request failed");
+    }
+  }
+  if (o)
+    return (
+      <main>
+        <div className="authBox">
+          <h1>Payment</h1>
+          <p>
+            Order #{o.id} created for ₹{o.totalAmount.toLocaleString("en-IN")}.
+          </p>
+          <p>This is a simulated payment flow for demonstration.</p>
+          <button className="primary" onClick={() => pay(true)}>
+            Simulate successful payment
+          </button>
+          <button className="secondary" onClick={() => pay(false)}>
+            Simulate failed payment
+          </button>
+          {e && <div className="error">{e}</div>}
+        </div>
+      </main>
+    );
+  return (
+    <main>
+      <form className="authBox" onSubmit={checkout}>
+        <h1>Checkout</h1>
+        <textarea
+          required
+          placeholder="Shipping address"
+          value={a}
+          onChange={(x) => setA(x.target.value)}
+        />
+        {e && <div className="error">{e}</div>}
+        <button className="primary">Place order</button>
+      </form>
+    </main>
+  );
+}

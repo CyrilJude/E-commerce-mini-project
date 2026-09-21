@@ -1,1 +1,40 @@
-import{useEffect,useState}from'react';import api from'../services/api';export default function Profile(){const[f,setF]=useState({}),[m,setM]=useState('');useEffect(()=>{api.get('/users/me').then(r=>setF(r.data))},[]);async function save(e){e.preventDefault();setF(await api.put('/users/me',f).then(r=>r.data));setM('Profile updated successfully.')}return <main><form className="authBox" onSubmit={save}><h1>My Profile</h1><input disabled value={f.email||''}/><input required placeholder="Name" value={f.name||''} onChange={e=>setF({...f,name:e.target.value})}/><input placeholder="Phone" value={f.phone||''} onChange={e=>setF({...f,phone:e.target.value})}/><textarea placeholder="Address" value={f.address||''} onChange={e=>setF({...f,address:e.target.value})}/><button className="primary">Save changes</button>{m&&<p className="success">{m}</p>}</form></main>}
+import { useEffect, useState } from "react";
+import api from "../services/api";
+export default function Profile() {
+  const [f, setF] = useState({}),
+    [m, setM] = useState("");
+  useEffect(() => {
+    api.get("/users/me").then((r) => setF(r.data));
+  }, []);
+  async function save(e) {
+    e.preventDefault();
+    setF(await api.put("/users/me", f).then((r) => r.data));
+    setM("Profile updated successfully.");
+  }
+  return (
+    <main>
+      <form className="authBox" onSubmit={save}>
+        <h1>My Profile</h1>
+        <input disabled value={f.email || ""} />
+        <input
+          required
+          placeholder="Name"
+          value={f.name || ""}
+          onChange={(e) => setF({ ...f, name: e.target.value })}
+        />
+        <input
+          placeholder="Phone"
+          value={f.phone || ""}
+          onChange={(e) => setF({ ...f, phone: e.target.value })}
+        />
+        <textarea
+          placeholder="Address"
+          value={f.address || ""}
+          onChange={(e) => setF({ ...f, address: e.target.value })}
+        />
+        <button className="primary">Save changes</button>
+        {m && <p className="success">{m}</p>}
+      </form>
+    </main>
+  );
+}

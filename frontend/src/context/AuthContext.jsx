@@ -1,1 +1,35 @@
-import {createContext,useContext,useEffect,useState} from 'react'; import api from '../services/api'; const AuthContext=createContext(null); export function AuthProvider({children}){const [user,setUser]=useState(JSON.parse(localStorage.getItem('user')||'null'));const logout=()=>{localStorage.removeItem('token');localStorage.removeItem('user');setUser(null)};useEffect(()=>{if(localStorage.getItem('token'))api.get('/users/me').then(r=>{setUser(r.data);localStorage.setItem('user',JSON.stringify(r.data))}).catch(logout)},[]);const save=d=>{const u={id:d.userId,name:d.name,email:d.email};localStorage.setItem('token',d.token);localStorage.setItem('user',JSON.stringify(u));setUser(u)};return <AuthContext.Provider value={{user,save,logout}}>{children}</AuthContext.Provider>} export const useAuth=()=>useContext(AuthContext);
+import { createContext, useContext, useEffect, useState } from "react";
+import api from "../services/api";
+const AuthContext = createContext(null);
+export function AuthProvider({ children }) {
+  const [user, setUser] = useState(
+    JSON.parse(localStorage.getItem("user") || "null"),
+  );
+  const logout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    setUser(null);
+  };
+  useEffect(() => {
+    if (localStorage.getItem("token"))
+      api
+        .get("/users/me")
+        .then((r) => {
+          setUser(r.data);
+          localStorage.setItem("user", JSON.stringify(r.data));
+        })
+        .catch(logout);
+  }, []);
+  const save = (d) => {
+    const u = { id: d.userId, name: d.name, email: d.email };
+    localStorage.setItem("token", d.token);
+    localStorage.setItem("user", JSON.stringify(u));
+    setUser(u);
+  };
+  return (
+    <AuthContext.Provider value={{ user, save, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
+}
+export const useAuth = () => useContext(AuthContext);
